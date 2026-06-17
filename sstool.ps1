@@ -97,6 +97,143 @@ $ToolData = @(
 )
 
 # ==============================================================================
+# MOON ICON  —  pixel-art crescent, drawn as scaled gradient pixel blocks
+# ==============================================================================
+# Each entry: x, y, width, height (in 20px pixel-grid units, pre-scale), hex color
+$MoonPixels = @(
+    @(100,0,  20,20,"#3A5FC0"),
+    @(80,20,  20,20,"#3A5FC0"),
+    @(100,20, 20,20,"#5078D6"),
+    @(60,40,  20,20,"#3458BE"),
+    @(80,40,  20,20,"#6E94E6"),
+    @(40,60,  20,20,"#2E4FAE"),
+    @(60,60,  20,20,"#7FA6EE"),
+    @(80,60,  20,20,"#9CC4FA"),
+    @(30,80,  20,20,"#2C4AA0"),
+    @(50,80,  20,20,"#8CB6F2"),
+    @(70,80,  20,20,"#A9D0FF"),
+    @(20,100, 20,20,"#26429A"),
+    @(40,100, 20,20,"#7FA6EE"),
+    @(60,100, 20,20,"#A9D0FF"),
+    @(20,120, 20,20,"#24408E"),
+    @(40,120, 20,20,"#7491E0"),
+    @(60,120, 20,20,"#9CC4FA"),
+    @(20,140, 20,20,"#2C4AA0"),
+    @(40,140, 20,20,"#6678C8"),
+    @(60,140, 20,20,"#8C9CE0"),
+    @(30,160, 20,20,"#34428C"),
+    @(50,160, 20,20,"#5C68B4"),
+    @(70,160, 20,20,"#7E84C8"),
+    @(40,180, 20,20,"#3A3A78"),
+    @(60,180, 20,20,"#52529A"),
+    @(80,180, 20,20,"#6E64AC"),
+    @(60,200, 20,20,"#322A66"),
+    @(80,200, 20,20,"#4C4288"),
+    @(100,200,20,20,"#604E9A"),
+    @(80,220, 20,20,"#2A2454"),
+    @(100,220,20,20,"#3E3470"),
+    @(100,240,20,20,"#241E40"),
+    @(120,240,20,20,"#382E5C"),
+    @(120,260,20,20,"#241E40"),
+    @(140,260,20,20,"#2A2454"),
+    @(140,280,20,20,"#1E1834")
+)
+# The bright crater accent, drawn last so it sits on top
+$MoonCrater = @(60,80,14,14)
+
+# Small pixel-diamond stars scattered near the moon, scaled separately
+$StarClusters = @(
+    @{ OffsetX=205; OffsetY=35; Scale=0.6; Pixels=@(
+            @(20,0,10,10),@(10,10,10,10),@(30,10,10,10),@(0,20,10,10),
+            @(20,20,10,10),@(40,20,10,10),@(10,30,10,10),@(30,30,10,10),@(20,40,10,10)
+        )
+    },
+    @{ OffsetX=235; OffsetY=90; Scale=0.6; Pixels=@(
+            @(6,0,6,6),@(0,6,6,6),@(12,6,6,6),@(6,12,6,6)
+        )
+    },
+    @{ OffsetX=10; OffsetY=160; Scale=0.6; Pixels=@(
+            @(8,0,8,8),@(0,8,8,8),@(16,8,8,8),@(8,16,8,8)
+        )
+    }
+)
+
+function New-MoonGlyphCanvas {
+    param([double]$Scale = 0.62)
+
+    $canvas = New-Object System.Windows.Controls.Canvas
+    $canvas.Width  = 200 * $Scale
+    $canvas.Height = 320 * $Scale
+    $canvas.SnapsToDevicePixels = $true
+
+    foreach ($p in $MoonPixels) {
+        $x = $p[0]; $y = $p[1]; $w = $p[2]; $h = $p[3]; $hex = $p[4]
+        $rect = New-Object System.Windows.Shapes.Rectangle
+        $rect.Width  = $w * $Scale
+        $rect.Height = $h * $Scale
+        $rect.Fill   = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.ColorConverter]::ConvertFromString($hex))
+        [System.Windows.Controls.Canvas]::SetLeft($rect, $x * $Scale)
+        [System.Windows.Controls.Canvas]::SetTop($rect,  $y * $Scale)
+        $canvas.Children.Add($rect) | Out-Null
+    }
+
+    # Crater glow accent
+    $craterBrush = New-Object System.Windows.Media.RadialGradientBrush
+    $craterBrush.GradientOrigin = New-Object System.Windows.Point(0.4,0.4)
+    $craterBrush.Center         = New-Object System.Windows.Point(0.4,0.4)
+    $craterBrush.RadiusX = 0.6; $craterBrush.RadiusY = 0.6
+    $craterBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xFF,0xF8,0xD8)), 0.0))
+    $craterBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xF2,0xC2,0x4A)), 1.0))
+    $crater = New-Object System.Windows.Shapes.Rectangle
+    $crater.Width  = $MoonCrater[2] * $Scale
+    $crater.Height = $MoonCrater[3] * $Scale
+    $crater.Fill   = $craterBrush
+    [System.Windows.Controls.Canvas]::SetLeft($crater, $MoonCrater[0] * $Scale)
+    [System.Windows.Controls.Canvas]::SetTop($crater,  $MoonCrater[1] * $Scale)
+    $canvas.Children.Add($crater) | Out-Null
+
+    # Soft glow behind the whole moon shape
+    $glowEffect = New-Object System.Windows.Media.Effects.DropShadowEffect
+    $glowEffect.Color = [System.Windows.Media.Color]::FromRgb(0x7A,0xB8,0xE8)
+    $glowEffect.BlurRadius = 22
+    $glowEffect.ShadowDepth = 0
+    $glowEffect.Opacity = 0.55
+    $canvas.Effect = $glowEffect
+
+    # Star clusters with their own gentle glow + gold radial gradient
+    foreach ($cluster in $StarClusters) {
+        $starBrush = New-Object System.Windows.Media.RadialGradientBrush
+        $starBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xFF,0xF4,0xC2)), 0.0))
+        $starBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xFF,0xD2,0x5A)), 0.55))
+        $starBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xF0,0xA8,0x28)), 1.0))
+
+        $starGlow = New-Object System.Windows.Media.Effects.DropShadowEffect
+        $starGlow.Color = [System.Windows.Media.Color]::FromRgb(0xFF,0xD2,0x5A)
+        $starGlow.BlurRadius = 10
+        $starGlow.ShadowDepth = 0
+        $starGlow.Opacity = 0.7
+
+        $starGroupCanvas = New-Object System.Windows.Controls.Canvas
+        $starGroupCanvas.Effect = $starGlow
+        foreach ($sp in $cluster.Pixels) {
+            $sx = $sp[0]; $sy = $sp[1]; $sw = $sp[2]; $sh = $sp[3]
+            $srect = New-Object System.Windows.Shapes.Rectangle
+            $srect.Width  = $sw * $cluster.Scale
+            $srect.Height = $sh * $cluster.Scale
+            $srect.Fill   = $starBrush
+            [System.Windows.Controls.Canvas]::SetLeft($srect, $sx * $cluster.Scale)
+            [System.Windows.Controls.Canvas]::SetTop($srect,  $sy * $cluster.Scale)
+            $starGroupCanvas.Children.Add($srect) | Out-Null
+        }
+        [System.Windows.Controls.Canvas]::SetLeft($starGroupCanvas, $cluster.OffsetX * $Scale)
+        [System.Windows.Controls.Canvas]::SetTop($starGroupCanvas,  $cluster.OffsetY * $Scale)
+        $canvas.Children.Add($starGroupCanvas) | Out-Null
+    }
+
+    return $canvas
+}
+
+# ==============================================================================
 # CATEGORY GLYPHS  (Segoe UI Symbol / Segoe MDL2 friendly unicode glyphs)
 # ==============================================================================
 $CategoryGlyphs = @{
@@ -266,10 +403,10 @@ $CategoryGlyphs = @{
                     <StackPanel Margin="12,16,12,14">
 
                         <!-- Moon glyph card -->
-                        <Border Background="#081120" CornerRadius="8" Margin="0,0,0,16" Padding="0,16" BorderBrush="#162E4E" BorderThickness="1">
+                        <Border Background="#081120" CornerRadius="8" Margin="0,0,0,16" Padding="0,18" BorderBrush="#162E4E" BorderThickness="1">
                             <StackPanel HorizontalAlignment="Center">
-                                <TextBlock x:Name="MoonGlyph" Text="&#x263E;" FontFamily="Segoe UI Symbol" FontSize="40" Foreground="{StaticResource Accent}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="SS MODE" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMuted}" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                                <Border x:Name="MoonHost" Width="124" Height="198" HorizontalAlignment="Center"/>
+                                <TextBlock Text="SS MODE" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMuted}" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                             </StackPanel>
                         </Border>
 
@@ -393,7 +530,7 @@ $OpenCmdBtn     = $window.FindName("OpenCmdBtn")
 $HostsCheckBtn  = $window.FindName("HostsCheckBtn")
 $InstPathBlock  = $window.FindName("InstPathBlock")
 $ParticleCanvas = $window.FindName("ParticleCanvas")
-$MoonGlyph      = $window.FindName("MoonGlyph")
+$MoonHost       = $window.FindName("MoonHost")
 
 $InstPathBlock.Text = "Install path:`n$installDir"
 
@@ -833,23 +970,25 @@ foreach ($cat in $Categories) {
 }
 
 # ==============================================================================
-# MOON GLYPH PHASE CYCLE
+# MOON ICON  —  build once, animate a gentle glow pulse
 # ==============================================================================
-$moonPhases = @([char]0x263E, [char]0x1F311, [char]0x1F312, [char]0x1F313, [char]0x1F314, [char]0x1F315)
-$script:moonIdx = 0
-$moonTimer = New-Object System.Windows.Threading.DispatcherTimer
-$moonTimer.Interval = [TimeSpan]::FromSeconds(2.2)
-$moonTimer.Add_Tick({
-    $script:moonIdx = ($script:moonIdx + 1) % $moonPhases.Count
-    $MoonGlyph.Text = $moonPhases[$script:moonIdx]
-})
-$moonTimer.Start()
+$moonCanvasInstance = New-MoonGlyphCanvas -Scale 0.62
+$MoonHost.Child = $moonCanvasInstance
+
+$glowPulse = New-Object System.Windows.Media.Animation.DoubleAnimation
+$glowPulse.From = 0.35
+$glowPulse.To   = 0.75
+$glowPulse.Duration = New-Object System.Windows.Duration ([TimeSpan]::FromSeconds(2.6))
+$glowPulse.AutoReverse = $true
+$glowPulse.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
+$glowPulse.EasingFunction = New-Object System.Windows.Media.Animation.SineEase
+$moonCanvasInstance.Effect.BeginAnimation([System.Windows.Media.Effects.DropShadowEffect]::OpacityProperty, $glowPulse)
 
 # ==============================================================================
 # EVENTS
 # ==============================================================================
 $window.Add_MouseLeftButtonDown({ try { $window.DragMove() } catch {} })
-$CloseBtn.Add_Click({ $moonTimer.Stop(); $particleTimer.Stop(); $window.Close() })
+$CloseBtn.Add_Click({ $particleTimer.Stop(); $window.Close() })
 $MinBtn.Add_Click({ $window.WindowState = "Minimized" })
 
 $OpenFolderBtn.Add_Click({
