@@ -9,7 +9,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $installDir = "$env:USERPROFILE\Downloads\BlueMoonSSTool"
 
 # ==============================================================================
-# TOOL DATA
+# TOOL DATA  (unchanged from original list)
 # ==============================================================================
 $ToolData = @(
     # Red Lotus
@@ -97,15 +97,30 @@ $ToolData = @(
 )
 
 # ==============================================================================
-# XAML UI  —  Blue Moon palette
+# CATEGORY GLYPHS  (Segoe UI Symbol / Segoe MDL2 friendly unicode glyphs)
+# ==============================================================================
+$CategoryGlyphs = @{
+    "RedLotus"     = [string][char]0x2766   # floral heart - lotus-ish
+    "Spokwn"       = [string][char]0x2317   # viewfinder-ish
+    "Praiselily"   = [string][char]0x2741   # eight petalled flower
+    "Tonynoh"      = [string][char]0x25C8   # diamond
+    "PS Scripts"   = [string][char]0x276F   # heavy right angle bracket (prompt)
+    "Echo"         = [string][char]0x29BF   # circled bullet
+    "Forensics"    = [string][char]0x2316   # position indicator (magnifier-ish)
+    "Zimmerman"    = [string][char]0x2710   # pen
+    "Dependencies" = [string][char]0x2699   # gear
+}
+
+# ==============================================================================
+# XAML UI  —  Blue Moon palette, refined
 # ==============================================================================
 [xml]$xaml = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="BlueMoon SS Toolkit"
-    Width="1200" Height="760"
-    MinWidth="1200" MinHeight="760"
+    Width="1240" Height="780"
+    MinWidth="1240" MinHeight="780"
     WindowStartupLocation="CenterScreen"
     ResizeMode="NoResize"
     WindowStyle="None"
@@ -118,29 +133,33 @@ $ToolData = @(
         <SolidColorBrush x:Key="MainBg"    Color="#070D1A"/>
         <SolidColorBrush x:Key="SidebarBg" Color="#0B1628"/>
         <SolidColorBrush x:Key="CardBg"    Color="#0D1F38"/>
+        <SolidColorBrush x:Key="CardBg2"   Color="#0F2440"/>
         <SolidColorBrush x:Key="Accent"    Color="#7AB8E8"/>
         <SolidColorBrush x:Key="AccentDim" Color="#2C5F8A"/>
-        <SolidColorBrush x:Key="TextMain"  Color="#C8DFF5"/>
-        <SolidColorBrush x:Key="TextMuted" Color="#3A6A98"/>
+        <SolidColorBrush x:Key="AccentSoft" Color="#3A6A98"/>
+        <SolidColorBrush x:Key="TextMain"  Color="#D7EAFB"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#5A86AC"/>
         <SolidColorBrush x:Key="ConsoleBg" Color="#040A14"/>
         <SolidColorBrush x:Key="Border"    Color="#1A3050"/>
+        <SolidColorBrush x:Key="GlyphBg"   Color="#13294A"/>
 
         <Style x:Key="SideBtn" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
             <Setter Property="FontSize"   Value="12"/>
-            <Setter Property="Height"     Value="36"/>
-            <Setter Property="Margin"     Value="0,0,0,3"/>
+            <Setter Property="Height"     Value="38"/>
+            <Setter Property="Margin"     Value="0,0,0,4"/>
             <Setter Property="Cursor"     Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
-                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0"/>
+                        <Border x:Name="SBorder" Background="{TemplateBinding Background}" CornerRadius="6" BorderThickness="1" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="14,0"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#122040"/>
+                                <Setter TargetName="SBorder" Property="Background" Value="#122548"/>
+                                <Setter TargetName="SBorder" Property="BorderBrush" Value="#234B78"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -151,8 +170,8 @@ $ToolData = @(
         <Style x:Key="TitleBtn" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
-            <Setter Property="Width"      Value="40"/>
-            <Setter Property="Height"     Value="36"/>
+            <Setter Property="Width"      Value="42"/>
+            <Setter Property="Height"     Value="40"/>
             <Setter Property="Cursor"     Value="Hand"/>
             <Setter Property="FontSize"   Value="13"/>
             <Setter Property="Template">
@@ -171,30 +190,66 @@ $ToolData = @(
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style TargetType="TabItem" x:Key="GlyphTab">
+            <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="Padding"    Value="14,7"/>
+            <Setter Property="Cursor"     Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="#0E1E36" CornerRadius="7" Margin="3,5,3,0" Padding="13,6" BorderThickness="1" BorderBrush="#16304E">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#1B3E64"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#3D7AB0"/>
+                                <Setter Property="Foreground" Value="#9FD2FA"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsSelected"  Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#15294A"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <Border Background="{StaticResource MainBg}" BorderBrush="#1A3050" BorderThickness="1" CornerRadius="8">
+    <Border Background="{StaticResource MainBg}" BorderBrush="#1A3050" BorderThickness="1" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="42"/>
+                <RowDefinition Height="46"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <!-- Particle canvas layered behind everything, clipped to rounded corners -->
+            <Canvas x:Name="ParticleCanvas" Grid.Row="0" Grid.RowSpan="2" Background="Transparent" IsHitTestVisible="False" ClipToBounds="True"/>
+
             <!-- Title bar -->
-            <Border Grid.Row="0" Background="{StaticResource SidebarBg}" CornerRadius="8,8,0,0">
-                <Grid Margin="16,0">
+            <Border x:Name="TitleBar" Grid.Row="0" Background="#0B1628" CornerRadius="10,10,0,0" Opacity="0.92">
+                <Grid Margin="18,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text=")))  " FontSize="14" FontWeight="Bold" Foreground="{StaticResource Accent}" FontFamily="Consolas"/>
-                        <TextBlock Text="Blue Moon" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
-                        <TextBlock Text="  Screenshare Toolkit" FontSize="11" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <Border Background="#13294A" CornerRadius="5" Padding="6,3" Margin="0,0,8,0">
+                            <TextBlock Text="◗◗◗" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Accent}" FontFamily="Consolas"/>
+                        </Border>
+                        <TextBlock Text="Blue Moon" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" VerticalAlignment="Center"/>
+                        <TextBlock Text="  Screenshare Toolkit" FontSize="11" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" Margin="6,2,0,0"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Button x:Name="MinBtn"   Style="{StaticResource TitleBtn}" Content="_"/>
-                        <Button x:Name="CloseBtn" Style="{StaticResource TitleBtn}" Content="X"/>
+                        <Button x:Name="MinBtn"   Style="{StaticResource TitleBtn}" Content="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                        <Button x:Name="CloseBtn" Style="{StaticResource TitleBtn}" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -202,118 +257,104 @@ $ToolData = @(
             <!-- Body -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="210"/>
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Sidebar -->
-                <Border Grid.Column="0" Background="{StaticResource SidebarBg}" BorderBrush="#1A3050" BorderThickness="0,0,1,0">
-                    <StackPanel Margin="10,14,10,14">
+                <Border Grid.Column="0" Background="#0B1628" Opacity="0.92" BorderBrush="#1A3050" BorderThickness="0,0,1,0">
+                    <StackPanel Margin="12,16,12,14">
 
-                        <!-- Moon art -->
-                        <Border Background="#040A14" CornerRadius="6" Margin="0,0,0,14" Padding="0,10">
-                            <TextBlock x:Name="MoonBlock"
-                                Text="     .-~~~-.&#x0a;  .-~       ~-.&#x0a; /  .   .    \&#x0a;|  .   .   . |&#x0a; \  .   .   /&#x0a;  '-.     .-'&#x0a;     '~-~'"
-                                FontFamily="Consolas" FontSize="9"
-                                Foreground="{StaticResource Accent}"
-                                HorizontalAlignment="Center"
-                                TextAlignment="Center"
-                                xml:space="preserve"/>
+                        <!-- Moon glyph card -->
+                        <Border Background="#081120" CornerRadius="8" Margin="0,0,0,16" Padding="0,16" BorderBrush="#162E4E" BorderThickness="1">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock x:Name="MoonGlyph" Text="&#x263E;" FontFamily="Segoe UI Symbol" FontSize="40" Foreground="{StaticResource Accent}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="SS MODE" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMuted}" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                            </StackPanel>
                         </Border>
 
                         <TextBlock Text="ACTIONS" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="4,0,0,6"/>
-                        <Button x:Name="OpenFolderBtn" Content="  Open Install Folder"    Style="{StaticResource SideBtn}"/>
-                        <Button x:Name="ClearCacheBtn" Content="  Clear Downloaded Files" Style="{StaticResource SideBtn}"/>
-                        <Button x:Name="OpenCmdBtn"    Content="  Open CMD"               Style="{StaticResource SideBtn}"/>
-                        <Button x:Name="HostsCheckBtn" Content="  Check Hosts File"       Style="{StaticResource SideBtn}"/>
+                        <Button x:Name="OpenFolderBtn" Style="{StaticResource SideBtn}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x1F4C2;" FontFamily="Segoe UI Emoji" FontSize="13" Margin="0,0,8,0"/>
+                                <TextBlock Text="Open Install Folder" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="ClearCacheBtn" Style="{StaticResource SideBtn}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x1F5D1;" FontFamily="Segoe UI Emoji" FontSize="13" Margin="0,0,8,0"/>
+                                <TextBlock Text="Clear Downloaded Files" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="OpenCmdBtn" Style="{StaticResource SideBtn}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x2318;" FontSize="13" Margin="0,0,8,0"/>
+                                <TextBlock Text="Open CMD" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="HostsCheckBtn" Style="{StaticResource SideBtn}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x2316;" FontSize="13" Margin="0,0,8,0"/>
+                                <TextBlock Text="Check Hosts File" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
-                        <Separator Background="#1A3050" Margin="0,10,0,10"/>
+                        <Border Height="1" Background="#1A3050" Margin="0,12,0,12"/>
 
                         <TextBlock Text="ABOUT" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMuted}" Margin="4,0,0,6"/>
                         <TextBlock Text="Blue Moon SS Toolkit" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" Margin="4,2,0,4"/>
                         <TextBlock Text="Screenshare forensics" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
                         <TextBlock Text="for Minecraft staff" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
-                        <TextBlock Text="Credits Cheesecatlol" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
-                        <TextBlock Text="https://github.com/cheesecatlol" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
-                        
 
-                        <Separator Background="#1A3050" Margin="0,10,0,10"/>
-                        <TextBlock x:Name="InstPathBlock" Text="" FontSize="9" Foreground="#2A4A6A" TextWrapping="Wrap" Margin="4,0"/>
+                        <Border Height="1" Background="#1A3050" Margin="0,12,0,12"/>
+                        <TextBlock x:Name="InstPathBlock" Text="" FontSize="9" Foreground="#3A5E80" TextWrapping="Wrap" Margin="4,0"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Main panel -->
-                <Grid Grid.Column="1" Margin="16,14,16,14">
+                <Grid Grid.Column="1" Margin="18,16,18,16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="10"/>
-                        <RowDefinition Height="160"/>
+                        <RowDefinition Height="150"/>
                     </Grid.RowDefinitions>
 
                     <!-- Status card -->
-                    <Border Grid.Row="0" Background="{StaticResource CardBg}" CornerRadius="6" Padding="16,10">
+                    <Border Grid.Row="0" Background="#0D1F38" Opacity="0.92" CornerRadius="8" Padding="18,12" BorderBrush="#16304E" BorderThickness="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel>
-                                <TextBlock x:Name="StatusTitle" Text="Ready" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
+                                <TextBlock x:Name="StatusTitle" Text="Ready" FontSize="21" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
                                 <TextBlock x:Name="StatusSub"   Text="Select a tool to launch or download." FontSize="11" Foreground="{StaticResource TextMuted}"/>
                             </StackPanel>
-                            <Border Grid.Column="1" Background="#0D1F38" BorderBrush="#1A3A5C" BorderThickness="1" CornerRadius="4" Padding="10,4" VerticalAlignment="Center">
+                            <Border Grid.Column="1" Background="#13294A" BorderBrush="#2C5F8A" BorderThickness="1" CornerRadius="5" Padding="11,5" VerticalAlignment="Center">
                                 <TextBlock x:Name="StatusBadge" Text="IDLE" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Accent}"/>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Tab control -->
-                    <Border Grid.Row="2" Background="{StaticResource CardBg}" CornerRadius="6">
-                        <TabControl x:Name="ToolsTab" Background="Transparent" BorderThickness="0" Padding="0">
-                            <TabControl.Resources>
-                                <Style TargetType="TabItem">
-                                    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
-                                    <Setter Property="FontSize"   Value="11"/>
-                                    <Setter Property="Padding"    Value="12,6"/>
-                                    <Setter Property="Cursor"     Value="Hand"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TabItem">
-                                                <Border x:Name="TabBorder" Background="Transparent" CornerRadius="4" Margin="3,4,3,0" Padding="12,5">
-                                                    <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="TabBorder" Property="Background" Value="#1A3A5C"/>
-                                                        <Setter Property="Foreground" Value="#7AB8E8"/>
-                                                    </Trigger>
-                                                    <MultiTrigger>
-                                                        <MultiTrigger.Conditions>
-                                                            <Condition Property="IsMouseOver" Value="True"/>
-                                                            <Condition Property="IsSelected"  Value="False"/>
-                                                        </MultiTrigger.Conditions>
-                                                        <Setter TargetName="TabBorder" Property="Background" Value="#122040"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
-                                                    </MultiTrigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TabControl.Resources>
+                    <Border Grid.Row="2" Background="#0D1F38" Opacity="0.92" CornerRadius="8" BorderBrush="#16304E" BorderThickness="1">
+                        <TabControl x:Name="ToolsTab" Background="Transparent" BorderThickness="0" Padding="4">
                         </TabControl>
                     </Border>
 
                     <!-- Console -->
-                    <Border Grid.Row="4" Background="{StaticResource ConsoleBg}" CornerRadius="6" Padding="12,8" BorderBrush="#1A3050" BorderThickness="1">
+                    <Border Grid.Row="4" Background="#040A14" Opacity="0.94" CornerRadius="8" Padding="14,10" BorderBrush="#16304E" BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="ACTIVITY LOG" FontSize="9" FontWeight="Bold" Foreground="#2A4A6A" FontFamily="Consolas" Margin="0,0,0,4"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="&#x25CF;" FontSize="8" Foreground="#3A6A98" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="ACTIVITY LOG" FontSize="9" FontWeight="Bold" Foreground="#3A6A98" FontFamily="Consolas"/>
+                            </StackPanel>
                             <TextBox x:Name="LogBox"
                                 Grid.Row="1"
                                 Background="Transparent"
@@ -339,19 +380,20 @@ $ToolData = @(
 $reader        = New-Object System.Xml.XmlNodeReader $xaml
 $window        = [Windows.Markup.XamlReader]::Load($reader)
 
-$MinBtn        = $window.FindName("MinBtn")
-$CloseBtn      = $window.FindName("CloseBtn")
-$StatusTitle   = $window.FindName("StatusTitle")
-$StatusSub     = $window.FindName("StatusSub")
-$StatusBadge   = $window.FindName("StatusBadge")
-$LogBox        = $window.FindName("LogBox")
-$ToolsTab      = $window.FindName("ToolsTab")
-$OpenFolderBtn = $window.FindName("OpenFolderBtn")
-$ClearCacheBtn = $window.FindName("ClearCacheBtn")
-$OpenCmdBtn    = $window.FindName("OpenCmdBtn")
-$HostsCheckBtn = $window.FindName("HostsCheckBtn")
-$MoonBlock     = $window.FindName("MoonBlock")
-$InstPathBlock = $window.FindName("InstPathBlock")
+$MinBtn         = $window.FindName("MinBtn")
+$CloseBtn       = $window.FindName("CloseBtn")
+$StatusTitle    = $window.FindName("StatusTitle")
+$StatusSub      = $window.FindName("StatusSub")
+$StatusBadge    = $window.FindName("StatusBadge")
+$LogBox         = $window.FindName("LogBox")
+$ToolsTab       = $window.FindName("ToolsTab")
+$OpenFolderBtn  = $window.FindName("OpenFolderBtn")
+$ClearCacheBtn  = $window.FindName("ClearCacheBtn")
+$OpenCmdBtn     = $window.FindName("OpenCmdBtn")
+$HostsCheckBtn  = $window.FindName("HostsCheckBtn")
+$InstPathBlock  = $window.FindName("InstPathBlock")
+$ParticleCanvas = $window.FindName("ParticleCanvas")
+$MoonGlyph      = $window.FindName("MoonGlyph")
 
 $InstPathBlock.Text = "Install path:`n$installDir"
 
@@ -392,22 +434,6 @@ function Start-CmdToolCommand {
     param([string]$Command)
     $enc = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($Command))
     Start-Process "cmd.exe" -ArgumentList "/k","powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $enc" -WindowStyle Normal
-}
-
-function Save-UrlToFile {
-    param([string]$Uri, [string]$OutFile)
-    $tmp = "$OutFile.download"
-    if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
-    $wc = New-Object System.Net.WebClient
-    $wc.Headers.Add("User-Agent","BlueMoonSSTool")
-    try {
-        $wc.DownloadFile($Uri,$tmp)
-        if (Test-Path -LiteralPath $OutFile) { Remove-Item -LiteralPath $OutFile -Force -ErrorAction Stop }
-        Move-Item -LiteralPath $tmp -Destination $OutFile -Force -ErrorAction Stop
-    } finally {
-        $wc.Dispose()
-        if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
-    }
 }
 
 function Start-DownloadedTool {
@@ -460,66 +486,186 @@ function Show-HostsCheck {
 }
 
 # ==============================================================================
-# POPULATE TABS
+# PARTICLE BACKGROUND  (constellation-style floating dots + connecting lines)
+# ==============================================================================
+$particleCount = 42
+$particles = New-Object System.Collections.Generic.List[Object]
+$rand = New-Object System.Random
+
+# Canvas logical size (matches window content area)
+$canvasW = 1238
+$canvasH = 778
+
+for ($i = 0; $i -lt $particleCount; $i++) {
+    $dot = New-Object System.Windows.Shapes.Ellipse
+    $size = 1.4 + ($rand.NextDouble() * 2.0)
+    $dot.Width  = $size
+    $dot.Height = $size
+    $opacity = 0.15 + ($rand.NextDouble() * 0.45)
+    $dot.Fill = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb([byte](255*$opacity), 122, 184, 232))
+    $x = $rand.NextDouble() * $canvasW
+    $y = $rand.NextDouble() * $canvasH
+    [System.Windows.Controls.Canvas]::SetLeft($dot, $x)
+    [System.Windows.Controls.Canvas]::SetTop($dot, $y)
+    $ParticleCanvas.Children.Add($dot) | Out-Null
+
+    $vx = (($rand.NextDouble() * 2) - 1) * 0.18
+    $vy = (($rand.NextDouble() * 2) - 1) * 0.18
+
+    $particles.Add(@{
+        Shape = $dot
+        X = $x; Y = $y
+        VX = $vx; VY = $vy
+        BaseOpacity = $opacity
+    })
+}
+
+# Lines pool (reused each tick, only shown when two particles are close enough)
+$maxLines = 60
+$lines = New-Object System.Collections.Generic.List[Object]
+for ($i = 0; $i -lt $maxLines; $i++) {
+    $ln = New-Object System.Windows.Shapes.Line
+    $ln.Stroke = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(40, 122, 184, 232))
+    $ln.StrokeThickness = 0.6
+    $ln.Visibility = "Collapsed"
+    $ParticleCanvas.Children.Add($ln) | Out-Null
+    $lines.Add($ln)
+}
+
+$linkDistance = 95.0
+
+$particleTimer = New-Object System.Windows.Threading.DispatcherTimer
+$particleTimer.Interval = [TimeSpan]::FromMilliseconds(33)
+$particleTimer.Add_Tick({
+    foreach ($p in $particles) {
+        $p.X += $p.VX
+        $p.Y += $p.VY
+        if ($p.X -lt 0)        { $p.X = 0;       $p.VX = -$p.VX }
+        if ($p.X -gt $canvasW) { $p.X = $canvasW; $p.VX = -$p.VX }
+        if ($p.Y -lt 0)        { $p.Y = 0;       $p.VY = -$p.VY }
+        if ($p.Y -gt $canvasH) { $p.Y = $canvasH; $p.VY = -$p.VY }
+        [System.Windows.Controls.Canvas]::SetLeft($p.Shape, $p.X)
+        [System.Windows.Controls.Canvas]::SetTop($p.Shape, $p.Y)
+    }
+
+    # Recompute nearby links, up to $maxLines
+    $lineIdx = 0
+    for ($i = 0; $i -lt $particles.Count -and $lineIdx -lt $maxLines; $i++) {
+        for ($j = $i + 1; $j -lt $particles.Count -and $lineIdx -lt $maxLines; $j++) {
+            $dx = $particles[$i].X - $particles[$j].X
+            $dy = $particles[$i].Y - $particles[$j].Y
+            $dist = [Math]::Sqrt(($dx*$dx) + ($dy*$dy))
+            if ($dist -lt $linkDistance) {
+                $ln = $lines[$lineIdx]
+                $ln.X1 = $particles[$i].X
+                $ln.Y1 = $particles[$i].Y
+                $ln.X2 = $particles[$j].X
+                $ln.Y2 = $particles[$j].Y
+                $fade = 1.0 - ($dist / $linkDistance)
+                $alpha = [byte](60 * $fade)
+                $ln.Stroke = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb($alpha, 122, 184, 232))
+                $ln.Visibility = "Visible"
+                $lineIdx++
+            }
+        }
+    }
+    # Hide unused lines
+    for ($k = $lineIdx; $k -lt $maxLines; $k++) {
+        $lines[$k].Visibility = "Collapsed"
+    }
+})
+$particleTimer.Start()
+
+# ==============================================================================
+# POPULATE TABS  (glyph-tagged headers, restyled cards)
 # ==============================================================================
 $Categories = @("RedLotus","Spokwn","Praiselily","Tonynoh","PS Scripts","Echo","Forensics","Zimmerman","Dependencies")
 
-# Button template string (Blue Moon style)
-$btnTemplate = "
+$btnTemplate = @"
 <ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='Button'>
-    <Border Background='{TemplateBinding Background}' CornerRadius='6' BorderBrush='#1A3A5C' BorderThickness='1'>
-        <StackPanel HorizontalAlignment='Center' VerticalAlignment='Center'>
-            <ContentPresenter HorizontalAlignment='Center' VerticalAlignment='Center'/>
-            <TextBlock x:Name='TypeTag' Text='' FontSize='9' Foreground='#2A5A8A' HorizontalAlignment='Center' Margin='0,2,0,0' FontFamily='Consolas'/>
-        </StackPanel>
+    <Border x:Name='CardBorder' Background='{TemplateBinding Background}' CornerRadius='8' BorderBrush='#1C3A5E' BorderThickness='1'>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height='*'/>
+                <RowDefinition Height='Auto'/>
+            </Grid.RowDefinitions>
+            <ContentPresenter Grid.Row='0' HorizontalAlignment='Center' VerticalAlignment='Center'/>
+        </Grid>
     </Border>
     <ControlTemplate.Triggers>
         <Trigger Property='IsMouseOver' Value='True'>
-            <Setter Property='Background' Value='#1A3A5C'/>
-            <Setter Property='Foreground' Value='#7AB8E8'/>
+            <Setter TargetName='CardBorder' Property='Background' Value='#173258'/>
+            <Setter TargetName='CardBorder' Property='BorderBrush' Value='#3D7AB0'/>
+            <Setter Property='Foreground' Value='#9FD2FA'/>
         </Trigger>
     </ControlTemplate.Triggers>
-</ControlTemplate>"
+</ControlTemplate>
+"@
 
 foreach ($cat in $Categories) {
-    $tab             = New-Object System.Windows.Controls.TabItem
-    $tab.Header      = $cat
+    $glyph = $CategoryGlyphs[$cat]
 
-    $scroll          = New-Object System.Windows.Controls.ScrollViewer
+    $tab = New-Object System.Windows.Controls.TabItem
+    $tab.SetResourceReference([System.Windows.Controls.Control]::StyleProperty, "GlyphTab")
+
+    $headerPanel = New-Object System.Windows.Controls.StackPanel
+    $headerPanel.Orientation = "Horizontal"
+    $glyphBlock = New-Object System.Windows.Controls.TextBlock
+    $glyphBlock.Text = $glyph
+    $glyphBlock.FontSize = 12
+    $glyphBlock.Margin = "0,0,6,0"
+    $glyphBlock.Foreground = [System.Windows.Media.Brushes]::SteelBlue
+    $headerPanel.Children.Add($glyphBlock) | Out-Null
+    $labelBlock = New-Object System.Windows.Controls.TextBlock
+    $labelBlock.Text = $cat
+    $headerPanel.Children.Add($labelBlock) | Out-Null
+    $tab.Header = $headerPanel
+
+    $scroll = New-Object System.Windows.Controls.ScrollViewer
     $scroll.VerticalScrollBarVisibility   = "Auto"
     $scroll.HorizontalScrollBarVisibility = "Disabled"
 
-    $wrap            = New-Object System.Windows.Controls.WrapPanel
-    $wrap.Margin     = "8"
+    $wrap = New-Object System.Windows.Controls.WrapPanel
+    $wrap.Margin = "10"
 
     $catTools = $ToolData | Where-Object { $_.Category -eq $cat }
 
     foreach ($tool in $catTools) {
         $t = $tool
 
-        # Build a small stack: name + type badge
-        $sp              = New-Object System.Windows.Controls.StackPanel
+        $sp = New-Object System.Windows.Controls.StackPanel
         $sp.HorizontalAlignment = "Center"
         $sp.VerticalAlignment   = "Center"
+
+        $glyphTile = New-Object System.Windows.Controls.TextBlock
+        $glyphTile.Text = $glyph
+        $glyphTile.FontSize = 18
+        $glyphTile.Foreground = "#4F8FC4"
+        $glyphTile.HorizontalAlignment = "Center"
+        $glyphTile.Margin = "0,0,0,4"
+        $sp.Children.Add($glyphTile) | Out-Null
 
         $nameBlock            = New-Object System.Windows.Controls.TextBlock
         $nameBlock.Text       = $t.Name
         $nameBlock.FontSize   = 12
-        $nameBlock.Foreground = "#C8DFF5"
+        $nameBlock.Foreground = "#D7EAFB"
         $nameBlock.HorizontalAlignment = "Center"
+        $nameBlock.TextAlignment = "Center"
+        $nameBlock.TextWrapping = "Wrap"
+        $nameBlock.Width = 150
 
         $typeBlock            = New-Object System.Windows.Controls.TextBlock
         $typeBlock.Text       = $t.Type.ToUpper()
         $typeBlock.FontSize   = 9
         $typeBlock.FontFamily = "Consolas"
         $typeBlock.HorizontalAlignment = "Center"
-        $typeBlock.Margin     = "0,3,0,0"
+        $typeBlock.Margin     = "0,4,0,0"
         $typeBlock.Foreground = switch ($t.Type) {
-            "GitHub" { "#3A6A98" }
-            "Cmd"    { "#2A5A7A" }
-            "Web"    { "#3A4A78" }
-            "Link"   { "#4A6A8A" }
-            default  { "#2A4A6A" }
+            "GitHub" { "#5A9BD6" }
+            "Cmd"    { "#4A8AB8" }
+            "Web"    { "#5A6FC8" }
+            "Link"   { "#6A9ACC" }
+            default  { "#3A6A98" }
         }
 
         $sp.Children.Add($nameBlock) | Out-Null
@@ -527,12 +673,12 @@ foreach ($cat in $Categories) {
 
         $btn             = New-Object System.Windows.Controls.Button
         $btn.Content     = $sp
-        $btn.Width       = 200
-        $btn.Height      = 62
+        $btn.Width       = 192
+        $btn.Height      = 96
         $btn.Margin      = "6"
         $btn.Cursor      = "Hand"
-        $btn.Background  = "#0D1F38"
-        $btn.Foreground  = "#C8DFF5"
+        $btn.Background  = "#0F2440"
+        $btn.Foreground  = "#D7EAFB"
         $btn.Tag         = $t.Name
         $btn.Template    = [Windows.Markup.XamlReader]::Parse($btnTemplate)
 
@@ -541,10 +687,9 @@ foreach ($cat in $Categories) {
             $tName      = $clickedBtn.Tag
             $tData      = $ToolData | Where-Object { $_.Name -eq $tName } | Select-Object -First 1
 
-            # Flash blue
             $origBg = $clickedBtn.Background
             $origFg = $clickedBtn.Foreground
-            $clickedBtn.Background = "#1A3A5C"
+            $clickedBtn.Background = "#1B3E64"
             $clickedBtn.IsEnabled  = $false
 
             if ($tData.Type -eq "Link") {
@@ -571,7 +716,6 @@ foreach ($cat in $Categories) {
                 $clickedBtn.IsEnabled  = $true
 
             } else {
-                # GitHub / Web — download in background runspace
                 Set-Status "Downloading" "Fetching $tName..." "BUSY"
                 Write-Log "Starting download: $tName"
 
@@ -689,20 +833,15 @@ foreach ($cat in $Categories) {
 }
 
 # ==============================================================================
-# MOON PHASE ANIMATION
+# MOON GLYPH PHASE CYCLE
 # ==============================================================================
-$moonFrames = @(
-    "     .-~~~-.`n  .-~       ~-.`n /  .   .    \`n|  .   .   . |`n \  .   .   /`n  '-.     .-'`n     '~-~'",
-    "     .-~~~-.`n  .-~       ~-.`n /    .   .  \`n|  .   .   . |`n \    .   . /`n  '-.     .-'`n     '~-~'",
-    "     .-~~~-.`n  .-~       ~-.`n /  .   .    \`n|    .   .   |`n \  .   .   /`n  '-.     .-'`n     '~-~'",
-    "     .-~~~-.`n  .-~       ~-.`n /    .      \`n|  .   .   . |`n \    .   . /`n  '-.     .-'`n     '~-~'"
-)
+$moonPhases = @([char]0x263E, [char]0x1F311, [char]0x1F312, [char]0x1F313, [char]0x1F314, [char]0x1F315)
 $script:moonIdx = 0
 $moonTimer = New-Object System.Windows.Threading.DispatcherTimer
-$moonTimer.Interval = [TimeSpan]::FromMilliseconds(1200)
+$moonTimer.Interval = [TimeSpan]::FromSeconds(2.2)
 $moonTimer.Add_Tick({
-    $script:moonIdx = ($script:moonIdx + 1) % $moonFrames.Count
-    $MoonBlock.Text = $moonFrames[$script:moonIdx]
+    $script:moonIdx = ($script:moonIdx + 1) % $moonPhases.Count
+    $MoonGlyph.Text = $moonPhases[$script:moonIdx]
 })
 $moonTimer.Start()
 
@@ -710,7 +849,7 @@ $moonTimer.Start()
 # EVENTS
 # ==============================================================================
 $window.Add_MouseLeftButtonDown({ try { $window.DragMove() } catch {} })
-$CloseBtn.Add_Click({ $moonTimer.Stop(); $window.Close() })
+$CloseBtn.Add_Click({ $moonTimer.Stop(); $particleTimer.Stop(); $window.Close() })
 $MinBtn.Add_Click({ $window.WindowState = "Minimized" })
 
 $OpenFolderBtn.Add_Click({
