@@ -463,7 +463,7 @@ $Categories = @("RedLotus","Spokwn","Praiselily","Tonynoh","PS Scripts","Echo","
 
 # Button template string (Blue Moon style)
 $btnTemplate = "
-<ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='Button'>
+<ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='Button'>
     <Border Background='{TemplateBinding Background}' CornerRadius='6' BorderBrush='#1A3A5C' BorderThickness='1'>
         <StackPanel HorizontalAlignment='Center' VerticalAlignment='Center'>
             <ContentPresenter HorizontalAlignment='Center' VerticalAlignment='Center'/>
