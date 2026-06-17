@@ -233,6 +233,9 @@ $ToolData = @(
                         <TextBlock Text="Blue Moon SS Toolkit" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" Margin="4,2,0,4"/>
                         <TextBlock Text="Screenshare forensics" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
                         <TextBlock Text="for Minecraft staff" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
+                        <TextBlock Text="Credits Cheesecatlol" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
+                        <TextBlock Text="https://github.com/cheesecatlol" FontSize="10" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="4,1,0,0"/>
+                        
 
                         <Separator Background="#1A3050" Margin="0,10,0,10"/>
                         <TextBlock x:Name="InstPathBlock" Text="" FontSize="9" Foreground="#2A4A6A" TextWrapping="Wrap" Margin="4,0"/>
