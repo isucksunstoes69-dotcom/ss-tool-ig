@@ -124,32 +124,6 @@ function New-MoonGlyphCanvas {
     $canvas.Height = 320 * $Scale
     $canvas.SnapsToDevicePixels = $true
 
-    foreach ($p in $MoonPixels) {
-        $x = $p[0]; $y = $p[1]; $w = $p[2]; $h = $p[3]; $hex = $p[4]
-        $rect = New-Object System.Windows.Shapes.Rectangle
-        $rect.Width  = $w * $Scale
-        $rect.Height = $h * $Scale
-        $rect.Fill   = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.ColorConverter]::ConvertFromString($hex))
-        [System.Windows.Controls.Canvas]::SetLeft($rect, $x * $Scale)
-        [System.Windows.Controls.Canvas]::SetTop($rect,  $y * $Scale)
-        $canvas.Children.Add($rect) | Out-Null
-    }
-
-    # Crater glow accent
-    $craterBrush = New-Object System.Windows.Media.RadialGradientBrush
-    $craterBrush.GradientOrigin = New-Object System.Windows.Point(0.4,0.4)
-    $craterBrush.Center         = New-Object System.Windows.Point(0.4,0.4)
-    $craterBrush.RadiusX = 0.6; $craterBrush.RadiusY = 0.6
-    $craterBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xFF,0xF8,0xD8)), 0.0))
-    $craterBrush.GradientStops.Add((New-Object System.Windows.Media.GradientStop ([System.Windows.Media.Color]::FromRgb(0xF2,0xC2,0x4A)), 1.0))
-    $crater = New-Object System.Windows.Shapes.Rectangle
-    $crater.Width  = $MoonCrater[2] * $Scale
-    $crater.Height = $MoonCrater[3] * $Scale
-    $crater.Fill   = $craterBrush
-    [System.Windows.Controls.Canvas]::SetLeft($crater, $MoonCrater[0] * $Scale)
-    [System.Windows.Controls.Canvas]::SetTop($crater,  $MoonCrater[1] * $Scale)
-    $canvas.Children.Add($crater) | Out-Null
-
     # Soft glow behind the whole moon shape
     $glowEffect = New-Object System.Windows.Media.Effects.DropShadowEffect
     $glowEffect.Color = [System.Windows.Media.Color]::FromRgb(0x7A,0xB8,0xE8)
