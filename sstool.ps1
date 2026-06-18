@@ -26,7 +26,7 @@ $ToolData = @(
     @{ Name="PFTrace";               Category="Orbdiff";    Type="GitHub"; URL="https://github.com/Orbdiff/PFTrace/releases/latest" },
     @{ Name="CheckDeletedUSN";       Category="Orbdiff";    Type="GitHub"; URL="https://github.com/Orbdiff/CheckDeletedUSN/releases/latest" },
     @{ Name="JARParser";             Category="Orbdiff";    Type="GitHub"; URL="https://github.com/Orbdiff/JARParser/releases/latest" },
-    
+
     # Red Lotus
     @{ Name="RL AltChecker";        Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotusAltChecker/releases/latest" },
     @{ Name="RL ModAnalyzer";       Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotus-Mod-Analyzer/releases/latest" },
@@ -663,7 +663,7 @@ $particleTimer.Start()
 # ==============================================================================
 # POPULATE TABS  (glyph-tagged headers, restyled cards)
 # ==============================================================================
-$Categories = @("RedLotus","Spokwn","Praiselily","Tonynoh","PS Scripts","Echo","Forensics","Zimmerman","Dependencies")
+$Categories = @("RedLotus","Spokwn","Praiselily","Tonynoh","PS Scripts","Echo","Forensics","Zimmerman","Dependencies","Orbdiff")
 
 $btnTemplate = @"
 <ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='Button'>
