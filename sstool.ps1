@@ -16,6 +16,7 @@ $ToolData = @(
     @{ Name="RL AltChecker";        Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotusAltChecker/releases/latest" },
     @{ Name="RL ModAnalyzer";       Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotus-Mod-Analyzer/releases/latest" },
     @{ Name="RL TaskSentinel";      Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotus-Task-Sentinel/releases/latest" },
+    @{ Name="RL TaskSentinel";      Category="RedLotus";    Type="GitHub"; URL="https://github.com/ItzIceHere/RedLotus-Task-Sentinel/releases/latest" },
 
     # Spokwn
     @{ Name="BAM Parser";           Category="Spokwn";      Type="GitHub"; URL="https://github.com/spokwn/BAM-parser/releases/latest" },
