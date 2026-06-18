@@ -46,6 +46,8 @@ $ToolData = @(
     @{ Name="MeowResolver";         Category="Tonynoh";     Type="GitHub"; URL="https://github.com/MeowTonynoh/MeowResolver/releases/latest" },
     @{ Name="MeowNovowareFucker";   Category="Tonynoh";     Type="GitHub"; URL="https://github.com/MeowTonynoh/MeowNovowareFucker/releases/latest" },
     @{ Name="MeowImportsChecker";   Category="Tonynoh";     Type="GitHub"; URL="https://github.com/MeowTonynoh/MeowImportsChecker/releases/latest" },
+    @{ Name="MeowClientFucker";   Category="Tonynoh";     Type="GitHub"; URL="https://github.com/MeowTonynoh/MeowClientFucker/releases/latest" },
+
 
     # PowerShell Scripts
     @{ Name="HabibiModAnalyzer";    Category="PS Scripts";  Type="Cmd";    Command="Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/HadronCollision/PowershellScripts/refs/heads/main/HabibiModAnalyzer.ps1')" },
